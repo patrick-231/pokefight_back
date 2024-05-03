@@ -1,0 +1,18 @@
+
+# hidden stuff
+.env
+.vs
+.vscode
+
+# directories
+bin/
+node_modules/
+obj/
+
+# single files
+package-lock.json
+
+# wildcards
+*.njsproj
+*.njsproj.user
+*.sln
