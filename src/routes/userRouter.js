@@ -4,24 +4,38 @@
 
 const express = require("express");
 
-const { loginUser, signUpUser } = require("../controllers/userController");
+const {
+  loginUser,
+  signUpUser,
+  getAllUsers,
+  getUserByEmail,
+  deleteUserByEmail
+} = require("../controllers/userController");
 
 const app = express.Router();
 
-// Login
-// 
-// In our implementation this stacks up to the mount path being defined 
+// In our implementation the follwing paths stacks up to the mount path being defined 
 // earlier via app.use("/user", userRouter);
-// http://localhost:PORT/user/login
+// Example: http://localhost:PORT/user/login
+
+// Login (POST)
 // 
 app.post("/login", loginUser);
 
-// Signup
-// 
-// In our implementation this stacks up to the mount path being defined 
-// earlier via app.use("/user", userRouter);
-// http://localhost:PORT/user/signup
+// Signup (POST) = Add user
 // 
 app.post("/signup", signUpUser);
+
+// getAllUsers (GET)
+// 
+app.get("/users", getAllUsers);
+
+// getUserByEmail (GET)
+// 
+app.get("/users/:email", getUserByEmail);
+
+// deleteUserByEmail (DELETE)
+// 
+app.delete("/users/:email", deleteUserByEmail);
 
 module.exports = app;

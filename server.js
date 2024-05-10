@@ -50,6 +50,7 @@ async function main() {
     }
 
     // Middleware
+
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true })); // form submission (for later use)
@@ -61,18 +62,23 @@ async function main() {
     await connectDB();
     console.log("Database connected successfully.".green);
 
-    // Define routes
-    app.get("/", (req, res) => {
+    const basePath = "/pokemonapi";
+
+    // Welcome message
+    app.get(basePath, (req, res) => {
       res.send("Welcome to our ultimate PokeFight API (Express/JWT included)!");
     });
     console.log("Welcome to our ultimate PokeFight API (Express/JWT included)!");
 
     // Define your routes and middleware here
-    // 
-    // So the mount path is:  http://localhost:PORT/user for userRouter etc.
-    app.use("/user", userRouter);
+    //
+    // Example:
+    // So the mount path is: http://localhost:PORT/user for userRouter etc.
+
+    app.use(`${basePath}/userrouter`, userRouter);
 
     // Start server
+
     const server = app.listen(PORT, () => {
       console.log(`Server listening on http://localhost:${PORT}`.green); // cannot read .rainbow :-P
     });
