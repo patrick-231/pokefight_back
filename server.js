@@ -1,12 +1,26 @@
-"use strict";
+"use strict";  // Hopefully redundant...
+
+//Global stuff...
 
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const dotenv = require("dotenv");
 const colors = require("colors");
+
+// Our stuff...
+
+// Database
 const connectDB = require("./dbinit");
+
+// Adresses an issue on my machine that ports are being allocated
+// just before an attempt to use them, making debugging hard to handle
 const isPortInUse = require("./src/utils/checkPort");
+
+// Routers go here...
+const userRouter = require("./src/routes/userRouter");
+
+
 
 async function main() {
   try {
@@ -21,10 +35,10 @@ async function main() {
     // this leads to the debugger complaining that the port is allocated
     // (this holds for EVERY port we want to use)
     // while we can see that the port we want to use is allocated by node itself!
-    // This happens in VSCode as in VS 2002.
+    // This happens in VSCode as in VS 2022, more often in VS.
     // One reason in VS 2022 is that this setting in the project file
     // <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
-    // should be present and is not, dependent on the history of the project
+    // should be present and is not (both a mystery), dependent on the history of the project
     // newly created or generated from existing code.
 
     const PORT = process.env.PORT || 8080;
@@ -36,9 +50,12 @@ async function main() {
     }
 
     // Middleware
-    app.use(express.json());
     app.use(cors());
-    app.use(express.urlencoded({ extended: true })); // form submission
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true })); // form submission (for later use)
+
+    // Spyware: Log what is going on
+    app.use((req, res, next) => { console.log(req.path, req.method); next(); });
 
     // Connect to the database
     await connectDB();
@@ -46,20 +63,18 @@ async function main() {
 
     // Define routes
     app.get("/", (req, res) => {
-      res.send("Welcome to our ultimate PokeFight API!");
+      res.send("Welcome to our ultimate PokeFight API (Express/JWT included)!");
     });
-    console.log("Welcome to our ultimate PokeFight API!");
+    console.log("Welcome to our ultimate PokeFight API (Express/JWT included)!");
 
     // Define your routes and middleware here
-    //
-    // Example:
-    // const anyrouter = require("./src/routes/anyrouter");
-    // app.use("/api/anyrouter", anyrouter);
-    //
+    // 
+    // So the mount path is:  http://localhost:PORT/user for userRouter etc.
+    app.use("/user", userRouter);
 
     // Start server
     const server = app.listen(PORT, () => {
-      console.log(`Server listening on http://localhost:${PORT}`.rainbow);
+      console.log(`Server listening on http://localhost:${PORT}`.green); // cannot read .rainbow :-P
     });
 
     // Error handling for server startup (for sure, we checked the port being accessible already)
