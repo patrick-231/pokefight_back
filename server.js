@@ -1,11 +1,12 @@
 "use strict";  // Hopefully redundant...
 
-//Global stuff...
+// Global stuff...
 
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const dotenv = require("dotenv");
+dotenv.config();  // Load environment variables...
 const colors = require("colors");
 
 // Our stuff...
@@ -17,21 +18,18 @@ const connectDB = require("./dbinit");
 // just before an attempt to use them, making debugging hard to handle
 const isPortInUse = require("./src/utils/checkPort");
 
-// Routers go here...
+// Router imports go here...
 const userRouter = require("./src/routes/userRouter");
-
-
+const pokemonRouter = require("./src/routes/pokemonRouter");
+const uploadRouter = require("./src/routes/uploadRouter");
 
 async function main() {
   try {
-    // Load environment variables
-    dotenv.config();
-
     // Check PORT for being allocated already.
     // This can happen
     // a) when another application blocks the port
     // b) when this application is terminated without deattaching
-    // c) the debug process and node itself collide.
+    // c) the debug process and node/nodemon itself collide.
     // this leads to the debugger complaining that the port is allocated
     // (this holds for EVERY port we want to use)
     // while we can see that the port we want to use is allocated by node itself!
@@ -55,10 +53,15 @@ async function main() {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true })); // form submission (for later use)
 
-    // Spyware: Log what is going on
-    app.use((req, res, next) => { console.log(req.path, req.method); next(); });
+    // Spyware: Log what is going on during runtime
+
+    app.use((req, res, next) => {
+      console.log(req.path, req.method);
+      next();
+    });
 
     // Connect to the database
+
     await connectDB();
     console.log("Database connected successfully.".green);
 
@@ -73,9 +76,12 @@ async function main() {
     // Define your routes and middleware here
     //
     // Example:
-    // So the mount path is: http://localhost:PORT/user for userRouter etc.
+    // 
+    // So the mount path is: http://localhost:PORT/pokeapi/userrouter for userRouter etc.
 
     app.use(`${basePath}/userrouter`, userRouter);
+    app.use(`${basePath}/pokemonrouter`, pokemonRouter);
+    app.use(`${basePath}/uploadrouter`, uploadRouter);
 
     // Start server
 
