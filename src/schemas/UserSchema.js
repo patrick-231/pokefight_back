@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  score: {
+      type: Number
+  }
 });
 
 // Custom static signup method
@@ -54,8 +57,11 @@ userSchema.statics.signup = async function (email, password) {
   const hash = await bcrypt.hash(password, salt);
 
   // Create user in DB with email & encrypted password.
+  // Score is set to 0. 
 
-  const user = await this.create({ email, password: hash });
+  const score = 0;
+
+  const user = await this.create({ email, password: hash, score });
 
   return user;
 };

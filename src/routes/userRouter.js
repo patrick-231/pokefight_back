@@ -10,6 +10,7 @@ const {
   signUpUser,
   getAllUsers,
   getUserByEmail,
+  updateUserScore,
   deleteUserByEmail
 } = require("../controllers/userController");
 
@@ -32,6 +33,9 @@ router.get("/users", getAllUsers);
 // getUserByEmail (GET)
 // 
 router.get("/users/:email", getUserByEmail);
+
+// updateUserScore (PATCH)
+router.patch("/users/:email/score", updateUserScore);
 
 // deleteUserByEmail (DELETE)
 // 

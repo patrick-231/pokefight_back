@@ -30,7 +30,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Sign up user
+// POST: Sign up user
 //
 // So if testing the POST request (Postman etc.), 
 // place these values in the request BODY, not as a query!! 
@@ -53,7 +53,7 @@ const signUpUser = async (req, res) => {
 };
 
 
-// Retrieve all users
+// GET: Retrieve all users
 //
 const getAllUsers = async (req, res) => {
   try {
@@ -74,7 +74,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// Retrieve one user by email (what else?)
+// GET: Retrieve one user by email (what else?)
 // As email is unique, chances are fine...
 const getUserByEmail = async (req, res) => {
   try {
@@ -99,7 +99,7 @@ const getUserByEmail = async (req, res) => {
   }
 };
 
-// Delete one user by email
+// DELETE: Delete one user by email
 //
 const deleteUserByEmail = async (req, res) => {
   try {
@@ -124,4 +124,37 @@ const deleteUserByEmail = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, signUpUser, getAllUsers, getUserByEmail, deleteUserByEmail };
+// PATCH: Update score
+//
+const updateUserScore = async (req, res) => {
+  // This is disputable against  const { email, newScore } = req.body; 
+  // Is this a matter of style? Or handling (Postman etc.)?
+  const email = req.params.email;
+  const newScore = req.body.score; 
+
+  try {
+    const updatedUser = await UserSchema.findOneAndUpdate(
+      { email: email },
+      { score: newScore },
+      { new: true } // else the record before updating is returned, which we do not want.
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' }); // We neglect other possible reasons
+    }
+
+    res.status(200).json({ message: 'User updated successfully', updatedUser });  
+  } catch (error) {
+    console.error('Error updating score:', error.message);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+};
+
+module.exports = {
+  loginUser,
+  signUpUser,
+  getAllUsers,
+  getUserByEmail,
+  updateUserScore,
+  deleteUserByEmail
+};
