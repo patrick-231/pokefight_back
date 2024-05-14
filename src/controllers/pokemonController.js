@@ -10,15 +10,14 @@ const pokemonSchema = require("../schemas/pokemonSchema");
 // 
 const getAllPokemons = async (req, res) => {
   try {
-    // Fetch all Pokemon from the database
+    // Fetch all Pokemons from the database
     const pokemon = await pokemonSchema.find();
-
-    // If no Pokemon found, return a 404 Not Found response
+   
     if (!pokemon || pokemon.length === 0) {
       return res.status(404).json({ message: 'No Pokemons found' });
     }
 
-    // If Pokemon found, return a 200 OK response with the Pokemon and the count
+    // If Pokemons found, return a 200 OK response with the Pokemon and the count
     res.status(200).json({ count: pokemon.length, pokemon });
 
   } catch (error) {
@@ -56,8 +55,7 @@ const getPokemonByQuery = async (req, res) => {
 };
 
 // 
-// GET: One by pk_name or pk_index
-// getPokemonInfo
+// GET: One by pk_name or pk_index 
 //
 // accepting one parameter that evaluates to a number or a name or to nothing, so we end up
 // with pk_index or pk_name or nothing.
@@ -94,9 +92,11 @@ const getPokemonInfo = async (req, res) => {
 }
 
 //
-// DELETE: 
+// DELETE
+//
 // One record by pk_index or pk_name
-// 
+// Data taken from preq. aram.
+//
 const deletePokemon = async (req, res) => {
   try {
     const param = req.params.param.toLowerCase(); // Ensure case consistency for comparison
@@ -131,17 +131,18 @@ const deletePokemon = async (req, res) => {
 }
 
 //
-// POST -> one record
-// addOnePokemon
+// POST
+// 
+// Add one pokemon. Data are taken from req.body
 // 
 const addOnePokemon = async (req, res) => {
   try {
-    const pokemonData = {};
+    let pokemonData = {};
 
-    // Retrieve the field names from the schema definition
+    // Retrieve the field names from the schema definition modern style...
     const fields = pokemonSchema.paths();
 
-    // Extract data from the request body based on schema definition
+    // Extract data from the request body based on schema definition 
     Object.keys(fields).forEach(field => {
       if (field !== '_id' && field !== '__v') {
         pokemonData[field] = req.body[field];
@@ -173,6 +174,7 @@ const addOnePokemon = async (req, res) => {
 //
 // PATCH -> update one record by pk_index or pk_name
 // updatePokemon
+// Data are being taken from the body.
 // 
 const updatePokemon = async (req, res) => {
   try {
@@ -182,7 +184,7 @@ const updatePokemon = async (req, res) => {
     const fields = pokemonSchema.paths();
 
     // Extract data from the request body based on schema definition
-    const updateData = {};
+    let updateData = {};
     Object.keys(fields).forEach(field => {
       if (field !== '_id' && field !== '__v' && req.body[field] !== undefined) {
         updateData[field] = req.body[field];
@@ -207,8 +209,7 @@ const updatePokemon = async (req, res) => {
       // Update the Pokemon by name
       pokemon = await pokemonSchema.findOneAndUpdate({ pk_name: param }, updateData, { new: true });
     }
-
-    // If no Pokemon found, return 404 Not Found
+   
     if (!pokemon) {
       return res.status(404).json({ error: 'Pokemon not found' });
     }

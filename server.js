@@ -21,6 +21,7 @@ const isPortInUse = require("./src/utils/checkPort");
 // Router imports go here...
 const userRouter = require("./src/routes/userRouter");
 const pokemonRouter = require("./src/routes/pokemonRouter");
+const leaderboardRouter = require("./src/routes/leaderboardRouter");
 const uploadRouter = require("./src/routes/uploadRouter");
 
 async function main() {
@@ -81,6 +82,7 @@ async function main() {
 
     app.use(`${basePath}/userrouter`, userRouter);
     app.use(`${basePath}/pokemonrouter`, pokemonRouter);
+    app.use(`${basePath}/leaderboardrouter`, leaderboardRouter);
     app.use(`${basePath}/uploadrouter`, uploadRouter);
 
     // Start server
