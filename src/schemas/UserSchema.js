@@ -15,10 +15,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-  },
-  score: {
-      type: Number
-  }
+  } 
 });
 
 // Custom static signup method

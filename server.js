@@ -24,6 +24,7 @@ const pokemonRouter = require("./src/routes/pokemonRouter");
 const leaderboardRouter = require("./src/routes/leaderboardRouter");
 const uploadRouter = require("./src/routes/uploadRouter");
 
+
 async function main() {
   try {
     // Check PORT for being allocated already.
@@ -78,12 +79,24 @@ async function main() {
     //
     // Example:
     // 
-    // So the mount path is: http://localhost:PORT/pokeapi/userrouter for userRouter etc.
+    // So the mount path is: http://localhost:PORT/pokemonapi/userrouter for userRouter etc.
 
     app.use(`${basePath}/userrouter`, userRouter);
     app.use(`${basePath}/pokemonrouter`, pokemonRouter);
     app.use(`${basePath}/leaderboardrouter`, leaderboardRouter);
     app.use(`${basePath}/uploadrouter`, uploadRouter);
+
+    // This lists all the endpoints defined so far
+    // as an array of objects.
+    // Example for such an object:
+    //{
+    //    path: '/pokemonapi/userrouter/signup',
+    //    methods: ['POST'],
+    //    middlewares: ['signUpUser']
+    //}
+
+    const expressListEndpoints = require('express-list-endpoints');
+    console.log(expressListEndpoints(app));
 
     // Start server
 
